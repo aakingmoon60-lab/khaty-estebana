@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>خطّي — أداة اكتشاف العملاء</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+
+  :root{
+    --bg:#0E1A2B;        /* deep navy night */
+    --bg2:#13243B;
+    --card:#1B2E47;
+    --line:#2A3F5C;
+    --ink:#EAF1F8;
+    --muted:#8FA6C0;
+    --gold:#F2B33D;      /* warm amber — the "morning" accent */
+    --teal:#3FBFA8;
+    --coral:#FF6B5E;
+    --green:#4FD18B;
+    --shadow:0 8px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;font-family:'Tajawal',sans-serif;background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(242,179,61,.10), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    color:var(--ink);min-height:100vh;padding-bottom:90px;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:18px}
+  header.app{display:flex;align-items:center;gap:12px;padding:8px 4px 18px}
+  .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--coral));
+    display:grid;place-items:center;font-weight:800;color:#1a1206;font-size:20px;box-shadow:var(--shadow)}
+  .logo span{transform:translateY(-1px)}
+  h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.2px}
+  .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+  .tabs{display:flex;gap:6px;background:var(--card);padding:6px;border-radius:14px;border:1px solid var(--line);margin-bottom:18px}
+  .tab{flex:1;text-align:center;padding:10px 6px;border-radius:10px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;transition:.2s}
+  .tab.active{background:linear-gradient(135deg,rgba(242,179,61,.18),rgba(63,191,168,.14));color:var(--ink)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .card h2{font-size:15px;margin:0 0 10px;font-weight:800}
+  .pill{display:inline-block;font-size:11.5px;padding:3px 10px;border-radius:999px;font-weight:700}
+  .pill.mom{background:rgba(63,191,168,.16);color:var(--teal)}
+  .pill.driver{background:rgba(242,179,61,.16);color:var(--gold)}
+  .pill.commuter{background:rgba(162,130,255,.16);color:#a282ff}
+
+  label{display:block;font-size:13px;font-weight:700;margin:14px 0 6px;color:var(--ink)}
+  .hint{font-size:11.5px;color:var(--muted);font-weight:500;margin:-2px 0 6px}
+  input[type=text],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:11px 12px;font-family:inherit;font-size:14px;outline:none}
+  textarea{min-height:64px;resize:vertical;line-height:1.6}
+  input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+
+  .seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .seg button{flex:1;min-width:64px;padding:9px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit}
+  .seg button.on{background:linear-gradient(135deg,var(--gold),var(--coral));color:#1a1206;border-color:transparent}
+  .seg.teal button.on{background:linear-gradient(135deg,var(--teal),#2f9e8c);color:#04221c}
+
+  .btn{display:block;width:100%;padding:14px;border-radius:12px;border:none;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer}
+  .btn.primary{background:linear-gradient(135deg,var(--gold),var(--coral));color:#1a1206;box-shadow:var(--shadow)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+  .btn:active{transform:translateY(1px)}
+
+  .qrow{border-top:1px solid var(--line);padding-top:6px;margin-top:6px}
+  .count{font-size:12px;color:var(--muted)}
+  .big{font-size:30px;font-weight:800;line-height:1}
+  .stat{display:flex;flex-direction:column;gap:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .mini{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .mini .lbl{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600}
+
+  .bar{height:10px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:6px;border:1px solid var(--line)}
+  .bar > i{display:block;height:100%;border-radius:99px}
+
+  .resp{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+  .resp .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .resp .nm{font-weight:800;font-size:14px}
+  .resp .q{font-size:12px;color:var(--muted);margin-top:8px;font-weight:600}
+  .resp .a{font-size:13.5px;line-height:1.6;margin-top:2px}
+  .del{background:transparent;border:none;color:var(--coral);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+
+  .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:13.5px;line-height:1.7}
+  .footnote{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.6}
+  .toast{position:fixed;bottom:90px;right:50%;transform:translateX(50%);background:var(--green);color:#04221c;padding:11px 18px;border-radius:99px;font-weight:800;font-size:13px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s}
+  .toast.show{opacity:1}
+
+  .signal{display:flex;align-items:center;gap:8px;font-size:13px;margin:8px 0;font-weight:600}
+  .dot{width:10px;height:10px;border-radius:99px;flex-shrink:0}
+  .verdict{border-radius:14px;padding:16px;margin-top:6px;font-weight:700;line-height:1.7;font-size:13.5px}
+  .verdict.go{background:rgba(79,209,139,.12);border:1px solid rgba(79,209,139,.35)}
+  .verdict.maybe{background:rgba(242,179,61,.12);border:1px solid rgba(242,179,61,.35)}
+  .verdict.stop{background:rgba(255,107,94,.12);border:1px solid rgba(255,107,94,.35)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div class="logo"><span>خ</span></div>
+    <div>
+      <h1>خطّي — اكتشاف العملاء</h1>
+      <div class="sub">سجّل المقابلات · أهل، موظّفون، طلاب، سائقون · حلّل النتائج فوراً</div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="collect">📝 مقابلة جديدة</button>
+    <button class="tab" data-tab="responses">📂 السجلّات</button>
+    <button class="tab" data-tab="analyze">📊 التحليل</button>
+  </div>
+
+  <div id="collect"></div>
+  <div id="responses" style="display:none"></div>
+  <div id="analyze" style="display:none"></div>
+
+  <div class="footnote">بياناتك تُحفظ داخل هذا الجهاز فقط (لا تُرسل لأي خادم). استخدم زر التصدير للنسخ الاحتياطي.</div>
+</div>
+<div class="toast" id="toast">تم الحفظ ✓</div>
+
+<script>
+/* ---------- Interview guides ---------- */
+const GUIDES = {
+  mom: {
+    label:"أم / ولي أمر",
+    cls:"mom",
+    questions:[
+      {id:"m_today", q:"كيف يذهب طفلك للمدرسة اليوم؟ ومن يوصله؟", hint:"افهم وضعه الحالي قبل أي شيء"},
+      {id:"m_worry", q:"ما الذي يقلقك فعلاً بخصوص ذهاب طفلك ورجوعه؟", hint:"ابحث عن الألم الحقيقي — لا تقترح أنت"},
+      {id:"m_late", q:"ماذا تفعلين الآن لتطمئنّي أنه وصل؟ وماذا لو تأخّر؟", hint:"اكتب ما تفعله فعلاً، لا ما تتمنّاه"},
+      {id:"m_wa", q:"هل تستخدمين واتساب مع السائق؟ هل يكفيك؟ ما الناقص؟", hint:"السؤال الأهم — منافسك المجاني"},
+      {id:"m_trust", q:"كيف اخترت السائق الحالي؟ هل تثقين به؟ لماذا؟", hint:"الثقة قد تكون المنتج الحقيقي"},
+      {id:"m_pay", q:"لو وُجد حلّ يطمئنك تماماً، كم تدفعين شهرياً؟ ولماذا هذا المبلغ؟", hint:"لا تذكر رقماً أنت — دعها تقوله"},
+      {id:"m_magic", q:"لو عندك عصا سحرية تحلّ مشكلة واحدة في الموضوع، ماذا تختارين؟", hint:"يكشف الأولوية الحقيقية"}
+    ]
+  },
+  commuter: {
+    label:"موظّف / طالب جامعة",
+    cls:"commuter",
+    questions:[
+      {id:"c_how", q:"كيف تذهب للعمل أو الجامعة حالياً؟ (سيارة خاصة؟ تاكسي؟ أصدقاء؟)", hint:"افهم وضعه الحالي قبل أي شيء"},
+      {id:"c_pain", q:"ما أصعب شيء في رحلتك اليومية؟ (التكلفة؟ الانتظار؟ عدم الانتظام؟)", hint:"الألم الحقيقي هو فرصتك"},
+      {id:"c_search", q:"هل حاولت يوماً إيجاد خط نقل ثابت؟ وين بحثت؟ وليش ما لقيت؟", hint:"يكشف هل السوق موجود أصلاً"},
+      {id:"c_spend", q:"كم تصرف شهرياً على المواصلات تقريباً؟", hint:"يحدّد السعر الذي يقبله"},
+      {id:"c_trust", q:"لو وجدت سائقاً بخط ثابت يومياً، ما الذي يطمئنك فيه؟ كيف تثق به؟", hint:"الثقة عائق رئيسي — افهم كيف يبنيها"},
+      {id:"c_pay", q:"لو خط نقل منظّم وموثوق يوصلك يومياً، كم تدفع شهرياً؟", hint:"دعه يقول الرقم — لا تقترح أنت"},
+      {id:"c_magic", q:"لو عصا سحرية تحلّ مشكلة واحدة في تنقّلك اليومي، ماذا تختار؟", hint:"يكشف أولويته الحقيقية"}
+    ]
+  },
+  driver: {
+    label:"سائق",
+    cls:"driver",
+    questions:[
+      {id:"d_manage", q:"كيف تدير أهالي خطّك حالياً؟ (أرقام، مجموعات، ورق؟)", hint:"افهم فوضاه اليومية"},
+      {id:"d_hard", q:"ما أصعب شيء في عملك اليومي مع الأهالي؟", hint:"الألم = فرصتك"},
+      {id:"d_find", q:"كيف تجد زبائن (أهالي) جدد؟ هل هذا صعب؟", hint:"اكتساب الزبائن قد يكون قيمتك له"},
+      {id:"d_wa", q:"هل ترسل موقعك عبر واتساب للأهالي؟ كيف تجدها؟", hint:"يكشف هل التتبّع سلعة عنده"},
+      {id:"d_pay", q:"لو تطبيق يجلب لك زبائن ويسهّل عملك، كم تدفع شهرياً؟", hint:"دعه يذكر الرقم"},
+      {id:"d_leave", q:"لو جلبك التطبيق زبائن، هل تبقى معه أم تكتفي بهم؟ بصراحة.", hint:"يكشف خطر التسرّب مباشرة"},
+      {id:"d_magic", q:"ما الشيء الذي لو حُلّ، يغيّر عملك للأفضل فوراً؟", hint:"أولويته الحقيقية"}
+    ]
+  }
+};
+
+/* ---------- Storage ---------- */
+const KEY="khatty_discovery_v1";
+let STORE_OK=true;
+try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){STORE_OK=false}
+let DATA = load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DATA))}catch(e){/* storage blocked; keep in memory */}}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1400)}
+
+/* ---------- State ---------- */
+let role="mom";
+let draft={};
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    ['collect','responses','analyze'].forEach(id=>document.getElementById(id).style.display='none');
+    const tab=t.dataset.tab;
+    document.getElementById(tab).style.display='block';
+    if(tab==='responses')renderResponses();
+    if(tab==='analyze')renderAnalyze();
+    if(tab==='collect')renderCollect();
+  };
+});
+
+/* ---------- Collect ---------- */
+function renderCollect(){
+  const g=GUIDES[role];
+  let qs=g.questions.map((it,i)=>`
+    <div class="qrow">
+      <label>${i+1}. ${it.q}</label>
+      <div class="hint">${it.hint}</div>
+      <textarea data-q="${it.id}" placeholder="اكتب إجابته بكلماته...">${draft[it.id]||''}</textarea>
+    </div>`).join('');
+
+  document.getElementById('collect').innerHTML=`
+    <div class="card" style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--muted);font-weight:600">المقابلات المحفوظة</div>
+        <div style="font-size:22px;font-weight:800;color:var(--gold);line-height:1.1">${DATA.length}</div>
+      </div>
+      <button class="btn primary" id="newBtn" style="width:auto;padding:11px 16px;font-size:14px">➕ مقابلة جديدة</button>
+    </div>
+
+    <div class="card">
+      <h2>من تقابل الآن؟</h2>
+      <div class="seg teal">
+        <button class="${role==='mom'?'on':''}" data-role="mom">👩 أم / ولي أمر</button>
+        <button class="${role==='commuter'?'on':''}" data-role="commuter">🎒 موظّف / طالب</button>
+        <button class="${role==='driver'?'on':''}" data-role="driver">🚐 سائق</button>
+      </div>
+      <label>الاسم أو رمز (اختياري)</label>
+      <input type="text" id="nm" placeholder="مثال: أم أحمد — مدرسة الرسالة" value="${draft.name||''}">
+
+      <label>إشارة الدفع — هل ذكر/ت استعداداً للدفع؟</label>
+      <div class="hint">أهم مؤشّر. سجّله بصدق بناءً على نبرته، لا أمنياتك.</div>
+      <div class="seg" id="payseg">
+        <button data-pay="yes" class="${draft.pay==='yes'?'on':''}">نعم بوضوح</button>
+        <button data-pay="maybe" class="${draft.pay==='maybe'?'on':''}">ربما / متردّد</button>
+        <button data-pay="no" class="${draft.pay==='no'?'on':''}">لا</button>
+      </div>
+
+      <label>هل واتساب يكفيه/ها حالياً؟</label>
+      <div class="seg" id="waseg">
+        <button data-wa="enough" class="${draft.wa==='enough'?'on':''}">يكفي تماماً</button>
+        <button data-wa="gaps" class="${draft.wa==='gaps'?'on':''}">يكفي لكن ناقص</button>
+        <button data-wa="bad" class="${draft.wa==='bad'?'on':''}">غير كافٍ</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="pill ${g.cls}">${g.label}</span> &nbsp;أسئلة المقابلة</h2>
+      ${qs}
+    </div>
+
+    <button class="btn primary" id="saveBtn">💾 حفظ والانتقال لمقابلة جديدة</button>
+    <button class="btn ghost" id="clearBtn" style="margin-top:10px">مسح الحقول</button>
+  `;
+
+  // role switch
+  document.querySelectorAll('[data-role]').forEach(b=>b.onclick=()=>{captureDraft();role=b.dataset.role;renderCollect()});
+  document.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>{draft.pay=b.dataset.pay;renderCollect()});
+  document.querySelectorAll('[data-wa]').forEach(b=>b.onclick=()=>{draft.wa=b.dataset.wa;renderCollect()});
+  document.getElementById('saveBtn').onclick=saveInterview;
+  document.getElementById('newBtn').onclick=()=>{
+    captureDraft();
+    const hasContent=draft.name||Object.keys(draft).some(k=>!['name','pay','wa'].includes(k)&&(draft[k]||'').trim());
+    if(hasContent && !confirm('بدء مقابلة جديدة؟ المسودّة الحالية غير المحفوظة ستُمسح.'))return;
+    draft={};role='mom';renderCollect();window.scrollTo(0,0);toast('جاهز لمقابلة جديدة ✨');
+  };
+  document.getElementById('clearBtn').onclick=()=>{draft={};renderCollect();toast('مُسحت الحقول')};
+}
+
+function captureDraft(){
+  const nm=document.getElementById('nm'); if(nm)draft.name=nm.value;
+  document.querySelectorAll('[data-q]').forEach(t=>draft[t.dataset.q]=t.value);
+}
+
+function saveInterview(){
+  captureDraft();
+  const g=GUIDES[role];
+  const answered=g.questions.some(q=>(draft[q.id]||'').trim());
+  if(!answered && !draft.name){toast('اكتب إجابة واحدة على الأقل');return}
+  DATA.push({
+    id:Date.now(), role, name:draft.name||'بدون اسم',
+    pay:draft.pay||'', wa:draft.wa||'',
+    answers:Object.fromEntries(g.questions.map(q=>[q.id,(draft[q.id]||'').trim()])),
+    at:new Date().toLocaleDateString('ar-IQ',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+  });
+  save();draft={};role='mom';renderCollect();window.scrollTo(0,0);toast('✓ حُفظت! ('+DATA.length+') — جاهز للتالي');
+}
+
+/* ---------- Responses ---------- */
+function renderResponses(){
+  const el=document.getElementById('responses');
+  // Toolbar is ALWAYS shown — import must work even with zero local data
+  const toolbar=`
+    <div class="card">
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <button class="btn primary" id="imp" style="flex:1;background:linear-gradient(135deg,#6C8CFF,#3FBFA8);color:#04221c">📥 استيراد ملفّات</button>
+        <button class="btn primary" id="exp" style="flex:1">⬇️ تصدير JSON</button>
+      </div>
+      <button class="btn primary" id="expTxt" style="width:100%;background:linear-gradient(135deg,var(--teal),#2f9e8c);color:#04221c">📄 تصدير نصّي</button>
+      <input type="file" id="impFile" accept=".json,application/json" multiple style="display:none">
+      <div class="hint" style="margin-top:10px;margin-bottom:0">المُجمِّع: اطلب من كل شخص «تصدير JSON» وإرساله لك، ثم اضغط «استيراد ملفّات» واختر كل الملفّات معاً — تُدمج تلقائياً بلا تكرار.</div>
+    </div>`;
+
+  if(!DATA.length){
+    el.innerHTML=toolbar+`<div class="card empty">لا توجد مقابلات في هذا الجهاز بعد.<br>استورد ملفّات من فريقك 📥 أو ابدأ مقابلة جديدة 📝</div>`;
+    wireResponseToolbar();
+    return;
+  }
+  let html=toolbar+`<div class="card" style="text-align:center;padding:10px"><span class="count">إجمالي المقابلات المجمّعة: <b style="color:var(--gold);font-size:14px">${DATA.length}</b></span></div>`;
+  [...DATA].reverse().forEach(r=>{
+    const g=GUIDES[r.role];
+    const qa=g.questions.filter(q=>r.answers[q.id]).map(q=>`<div class="q">• ${q.q}</div><div class="a">${esc(r.answers[q.id])}</div>`).join('')||'<div class="a" style="color:var(--muted)">— لا إجابات مكتوبة —</div>';
+    html+=`<div class="resp">
+      <div class="top">
+        <div><span class="nm">${esc(r.name)}</span> <span class="pill ${g.cls}">${g.label}</span></div>
+        <button class="del" data-del="${r.id}">حذف</button>
+      </div>
+      <div class="count">${r.at} ${payBadge(r.pay)} ${waBadge(r.wa)}</div>
+      ${qa}
+    </div>`;
+  });
+  el.innerHTML=html;
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    if(confirm('حذف هذه المقابلة؟')){DATA=DATA.filter(x=>x.id!=b.dataset.del);save();renderResponses()}
+  });
+  wireResponseToolbar();
+}
+
+function wireResponseToolbar(){
+  const exp=document.getElementById('exp'); if(exp)exp.onclick=exportJSON;
+  const expTxt=document.getElementById('expTxt'); if(expTxt)expTxt.onclick=exportTxt;
+  const imp=document.getElementById('imp'); const impFile=document.getElementById('impFile');
+  if(imp && impFile){
+    imp.onclick=()=>impFile.click();
+    impFile.onchange=()=>importFiles(impFile.files);
+  }
+}
+
+function importFiles(fileList){
+  const files=[...fileList]; if(!files.length)return;
+  let done=0, added=0, dupes=0, bad=0;
+  const existing=new Set(DATA.map(d=>d.id));
+  files.forEach(f=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const parsed=JSON.parse(reader.result);
+        const arr=Array.isArray(parsed)?parsed:[parsed];
+        arr.forEach(rec=>{
+          if(rec && rec.role && rec.answers){
+            // de-dupe by id; if no id, build a signature
+            const key = rec.id || (rec.role+'|'+(rec.name||'')+'|'+JSON.stringify(rec.answers));
+            if(existing.has(key)){dupes++;}
+            else{
+              if(!rec.id) rec.id = Date.now()+Math.floor(Math.random()*100000);
+              existing.add(rec.id); existing.add(key);
+              DATA.push(rec); added++;
+            }
+          } else { bad++; }
+        });
+      }catch(e){ bad++; }
+      done++;
+      if(done===files.length){
+        save();
+        renderResponses();
+        let msg=`أُضيف ${added} مقابلة`;
+        if(dupes)msg+=` · تجاهل ${dupes} مكرّر`;
+        if(bad)msg+=` · ${bad} ملف غير صالح`;
+        toast(msg);
+      }
+    };
+    reader.onerror=()=>{bad++;done++;if(done===files.length){save();renderResponses();toast('تعذّر قراءة بعض الملفّات')}};
+    reader.readAsText(f);
+  });
+}
+function payBadge(p){if(p==='yes')return '· 💰 يدفع';if(p==='maybe')return '· 🤔 متردّد';if(p==='no')return '· 🚫 لا يدفع';return ''}
+function waBadge(w){if(w==='bad')return '· واتساب لا يكفي';if(w==='gaps')return '· واتساب ناقص';if(w==='enough')return '· واتساب يكفيه';return ''}
+
+/* ---------- Analyze ---------- */
+function renderAnalyze(){
+  const el=document.getElementById('analyze');
+  const n=DATA.length;
+  if(!n){el.innerHTML=`<div class="card empty">لا بيانات للتحليل بعد.<br>سجّل بضع مقابلات أولاً 📊</div>`;return}
+  const moms=DATA.filter(d=>d.role==='mom'), drv=DATA.filter(d=>d.role==='driver'), comm=DATA.filter(d=>d.role==='commuter');
+  const pay=k=>DATA.filter(d=>d.pay===k).length;
+  const wa=k=>DATA.filter(d=>d.wa===k).length;
+  const payYes=pay('yes'),payMaybe=pay('maybe'),payNo=pay('no');
+  const waBad=wa('bad'),waGaps=wa('gaps'),waEnough=wa('enough');
+  const payScore = n? Math.round((payYes*100+payMaybe*40)/n):0;
+  const waOpportunity = n? Math.round(((waBad*100+waGaps*55)/n)):0;
+
+  // verdict logic
+  let vClass='maybe',vTitle='النتيجة المبدئية: امضِ بحذر',vText='';
+  if(n<8){vClass='maybe';vTitle='تحتاج عيّنة أكبر';vText=`لديك ${n} مقابلات فقط. اهدف لـ 10 أمّهات و5 سائقين على الأقل قبل أي قرار. كل مقابلة تقرّبك من الحقيقة.`}
+  else if(payScore>=55 && waOpportunity>=50){vClass='go';vTitle='✅ إشارة إيجابية قوية';vText='هناك استعداد حقيقي للدفع، وواتساب لا يكفي كثيرين. هذه أفضل لحظة للبناء — بثقة، وعلى الميزات التي ذكروها هم، لا التي تخيّلتها أنت.'}
+  else if(payScore<35 || waEnough> (n*0.5)){vClass='stop';vTitle='⚠️ إشارة تحذير';vText='قلّة مستعدّون للدفع، أو واتساب يكفي الأغلبية. لا تبدأ البرمجة بعد. أعد التفكير في القيمة: ما الذي يستحقّ الدفع فعلاً؟ ربّما المشكلة الحقيقية مختلفة عمّا تخيّلت.'}
+  else{vClass='maybe';vTitle='🤔 إشارة مختلطة';vText='النتائج غير حاسمة. ابحث في إجابات «العصا السحرية» و«ما الناقص في واتساب» عن نمط متكرّر — غالباً القيمة الحقيقية مخبّأة هناك، وقد تكون غير ما بدأت به.'}
+
+  el.innerHTML=`
+    <div class="card">
+      <h2>نظرة سريعة</h2>
+      <div class="grid3">
+        <div class="mini"><div class="big">${n}</div><div class="lbl">إجمالي المقابلات</div></div>
+        <div class="mini"><div class="big" style="color:var(--teal)">${moms.length}</div><div class="lbl">أمّهات</div></div>
+        <div class="mini"><div class="big" style="color:#a282ff">${comm.length}</div><div class="lbl">موظّفون/طلاب</div></div>
+        <div class="mini" style="margin-top:8px"><div class="big" style="color:var(--gold)">${drv.length}</div><div class="lbl">سائقون</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>💰 مؤشّر الاستعداد للدفع</h2>
+      <div class="stat"><span class="big" style="color:${payScore>=55?'var(--green)':payScore>=35?'var(--gold)':'var(--coral)'}">${payScore}%</span>
+      <span class="count">مرجّح: «نعم» = ١٠٠٪، «متردّد» = ٤٠٪</span></div>
+      <div class="bar"><i style="width:${payScore}%;background:linear-gradient(90deg,var(--coral),var(--gold),var(--green))"></i></div>
+      <div style="margin-top:12px">
+        ${sig('var(--green)',`يدفع بوضوح: ${payYes}`)}
+        ${sig('var(--gold)',`متردّد: ${payMaybe}`)}
+        ${sig('var(--coral)',`لا يدفع: ${payNo}`)}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📱 الفرصة مقابل واتساب</h2>
+      <div class="hint" style="margin-top:0">كلما زاد عدد من لا يكفيهم واتساب، زادت فرصة منتجك.</div>
+      <div class="stat" style="margin-top:8px"><span class="big" style="color:${waOpportunity>=50?'var(--green)':'var(--gold)'}">${waOpportunity}%</span>
+      <span class="count">حجم الفجوة التي يتركها واتساب</span></div>
+      <div class="bar"><i style="width:${waOpportunity}%;background:linear-gradient(90deg,var(--coral),var(--teal))"></i></div>
+      <div style="margin-top:12px">
+        ${sig('var(--coral)',`واتساب لا يكفي: ${waBad}`)}
+        ${sig('var(--gold)',`يكفي لكن ناقص: ${waGaps}`)}
+        ${sig('var(--muted)',`واتساب يكفيهم: ${waEnough}`)}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🧭 القرار المبدئي</h2>
+      <div class="verdict ${vClass}"><div style="font-size:15px;margin-bottom:6px">${vTitle}</div>${vText}</div>
+      <div class="hint" style="margin-top:12px">هذا مؤشّر آلي مبسّط يساعدك على القراءة — القرار النهائي يبقى لك بعد قراءة الإجابات النوعية بنفسك.</div>
+    </div>
+
+    <div class="card">
+      <h2>🔑 اقرأ هذه الإجابات بعينك</h2>
+      <div class="hint" style="margin-top:0">الأرقام تعطي اتجاهاً، لكن الذهب في كلماتهم. راجع إجابات «العصا السحرية» و«الناقص في واتساب».</div>
+      ${keyAnswers()}
+    </div>
+  `;
+}
+function sig(c,t){return `<div class="signal"><span class="dot" style="background:${c}"></span>${t}</div>`}
+function keyAnswers(){
+  const keys=['m_magic','m_wa','c_magic','c_trust','c_search','d_magic','d_leave'];
+  let out='';
+  DATA.forEach(d=>{
+    keys.forEach(k=>{
+      if(d.answers[k]){
+        const q=(GUIDES[d.role].questions.find(x=>x.id===k)||{}).q||'';
+        out+=`<div class="resp" style="margin-top:8px"><div class="q">${esc(d.name)} — ${q}</div><div class="a">${esc(d.answers[k])}</div></div>`;
+      }
+    });
+  });
+  return out||'<div class="empty">لم تُسجَّل إجابات على الأسئلة المفتاحية بعد.</div>';
+}
+
+/* ---------- Export ---------- */
+function exportJSON(){
+  if(!DATA.length){toast('لا توجد بيانات للتصدير');return}
+  // ensure every record has an id (for clean de-dupe on merge)
+  DATA.forEach(d=>{if(!d.id)d.id=Date.now()+Math.floor(Math.random()*100000)});
+  save();
+  let who=(prompt('اسمك (ليعرف المُجمِّع من أرسل الملف):','')||'').trim();
+  const safe=who.replace(/[^\u0600-\u06FF\w]+/g,'_').slice(0,20)||'فريق';
+  const stamp=new Date().toISOString().slice(0,10);
+  dl(`khatty_${safe}_${stamp}.json`, JSON.stringify(DATA,null,2));
+  toast('صُدّر JSON ✓ أرسله للمُجمِّع');
+}
+function exportTxt(){
+  if(!DATA.length){toast('لا توجد بيانات للتصدير');return}
+  let t=`خطّي — نتائج اكتشاف العملاء\n${DATA.length} مقابلة\n${'='.repeat(30)}\n\n`;
+  DATA.forEach((d,i)=>{
+    t+=`(${i+1}) ${d.name} — ${GUIDES[d.role].label} — ${d.at}\n`;
+    t+=`الدفع: ${d.pay||'—'} | واتساب: ${d.wa||'—'}\n`;
+    GUIDES[d.role].questions.forEach(q=>{if(d.answers[q.id])t+=`Q: ${q.q}\nA: ${d.answers[q.id]}\n`});
+    t+=`\n${'-'.repeat(28)}\n\n`;
+  });
+  dl('khatty_discovery.txt',t);
+  toast('صُدّر نصّياً ✓');
+}
+function dl(name,content){
+  const b=new Blob([content],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();
+}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+renderCollect();
+</script>
+</body>
+</html>
